@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "cm": "git-cz"
+  },
+  "dependencies": {
+    "commitizen": "^2.9.6",
+    "lerna": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^2.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
