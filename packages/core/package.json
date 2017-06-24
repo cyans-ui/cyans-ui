@@ -1,0 +1,11 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "postcss index.css -o dist/index.css"
+  },
+  "author": "",
+  "license": "ISC"
+}
