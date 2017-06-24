@@ -1,13 +1,47 @@
 {
+  "name": "cyans-ui",
+  "version": "0.0.0",
   "scripts": {
-    "cm": "git-cz"
+    "cm": "git-cz",
+    "test": "lerna exec --concurrency 1 -- jest -c ../../jest.config.js",
+    "lint:css": "stylelint packages/**/*.css",
+    "lint:js": "eslint packages",
+    "lint": "npm run lint:css && npm run lint:js",
+    "build:clean": "lerna exec -- rm -rf dist",
+    "build:js": "lerna exec -- webpack --config ../../webpack.config.js",
+    "build:css": "lerna run build:css",
+    "build-dev": "npm run build:clean && npm run build:js && npm run build:css",
+    "build": "npm run build:clean && NODE_ENV=production npm run build:js && NODE_ENV=production npm run build:css"
   },
   "dependencies": {
     "commitizen": "^2.9.6",
     "lerna": "^2.0.0-rc.5"
   },
   "devDependencies": {
-    "cz-conventional-changelog": "^2.0.0"
+    "babel-core": "^6.25.0",
+    "babel-jest": "^20.0.3",
+    "babel-loader": "^7.1.0",
+    "babel-preset-env": "^1.5.2",
+    "cssnano": "^3.10.0",
+    "cz-conventional-changelog": "^2.0.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.1.0",
+    "jest": "^20.0.4",
+    "lost": "^8.0.0",
+    "postcss": "^6.0.3",
+    "postcss-cli": "^4.1.0",
+    "postcss-cssnext": "^2.11.0",
+    "postcss-discard-comments": "^2.0.4",
+    "postcss-loader": "^2.0.6",
+    "postcss-reporter": "^4.0.0",
+    "regenerator-runtime": "^0.10.5",
+    "stylelint": "^7.11.1",
+    "stylelint-config-standard": "^16.0.0",
+    "webpack": "^3.0.0"
   },
   "config": {
     "commitizen": {
