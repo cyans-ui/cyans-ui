@@ -1,10 +1,26 @@
 module.exports = {
   plugins: [
-    require("stylelint")({}),
-    require('postcss-discard-comments')({ removeAll: true }),
-    require('lost')({}),
-    require("postcss-cssnext")(require("./cssnext.config.json")),
-    require("postcss-reporter")({}),
-    require('cssnano')({ preset: 'default' })
+    require("stylelint")({
+      configFile: './.stylelintrc'
+    }),
+    require('lost')({
+      flexbox: 'flex'
+    }),
+    require("postcss-cssnext")({
+      browsers: ['last 1 version'],
+      features: {
+        customProperties: false
+      }
+    }),
+    require('cssnano')({
+      preset: 'default',
+      autoprefixer: false,
+      minifySelectors: false,
+      reduceIdents: false
+    }),
+    require("postcss-reporter")({
+      clearMessages: true,
+      clearReportedMessages: true
+    })
   ]
 };
