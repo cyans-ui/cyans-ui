@@ -23,7 +23,7 @@ module.exports = {
         ]
       },
       {
-        test: /\.css$/,
+        test: /\.postcss$/,
         include: process.cwd(),
         exclude: /node_modules/,
         use: [
