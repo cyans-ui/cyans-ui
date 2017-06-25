@@ -14,9 +14,7 @@ module.exports = {
     }),
     require('cssnano')({
       preset: 'default',
-      autoprefixer: false,
-      minifySelectors: false,
-      reduceIdents: false
+      minifySelectors: false
     }),
     require("postcss-reporter")({
       clearMessages: true,
