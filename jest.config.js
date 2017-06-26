@@ -1,6 +1,6 @@
 module.exports = {
   "moduleNameMapper": {
-    "\\.css$": "<rootDir>../../__mocks__/css.js"
+    "\\.postcss$": "<rootDir>../../__mocks__/postcss.js"
   },
   "rootDir": process.cwd()
 };
