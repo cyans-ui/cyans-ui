@@ -1,3 +1,3 @@
-import './index.css';
+import './index.postcss';
 
 export default 5;
