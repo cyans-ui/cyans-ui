@@ -2,10 +2,6 @@ machine:
   node:
     version: 6.11.0
 
-dependencies:
-  pre:
-    - npm i
-
 test:
   override:
     - npm test
