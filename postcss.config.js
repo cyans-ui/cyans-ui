@@ -1,7 +1,7 @@
 module.exports = {
   plugins: [
     require("stylelint")({
-      configFile: './.stylelintrc'
+      configFile: '../../.stylelintrc'
     }),
     require('lost')({
       flexbox: 'flex'
