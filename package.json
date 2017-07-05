@@ -1,6 +1,11 @@
 {
   "name": "cyans-ui",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyans-ui/cyans-ui.git"
+  },
+  "license": "MIT",
   "scripts": {
     "cm": "git-cz",
     "test": "lerna exec --concurrency 1 -- jest -c ../../jest.config.js",
