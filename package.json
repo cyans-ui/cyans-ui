@@ -1,7 +1,7 @@
 {
   "name": "cyans-ui",
   "version": "0.0.0",
-  "description": "The UI toolkit built on Web Components and virtual dom Edit",
+  "description": "The UI toolkit built on Web Components and virtual dom.",
   "repository": {
     "type": "git",
     "url": "https://github.com/cyans-ui/cyans-ui.git"
