@@ -44,25 +44,22 @@ function createDiffUnitOfWork(nextTree, currentTree, domMarker, parentVNode) {
 
 function performsWorkUnit(workUnit, scheduler) {
   const {
-    domMarker,
+    domMarker = {},
     nextTree,
     currentTree,
     treeCursor,
   } = workUnit;
 
-  // TODO: check if this has to be done here or after the diff, only if needed
-  // if current node is of type container, create the inner tree
   const nextNode = nextTree[treeCursor];
   const currentNode = currentTree[treeCursor];
 
   if (typeof nextNode === 'object') {
     if (nextNode.nodeType === 'container') {
-      let newElementsTree = nextNode({
+      let newElementsTree = nextNode.type({
         ...nextNode.props,
         children: nextNode.children,
       });
       newElementsTree = Array.isArray(newElementsTree) ? newElementsTree : [newElementsTree];
-
       nextNode.subTree = newElementsTree;
     } else {
       nextNode.subTree = nextNode.children;
@@ -88,7 +85,7 @@ function performsWorkUnit(workUnit, scheduler) {
           nextNodeType !== currentNodeType ||
           nextType !== currentType
         ) {
-            // schedule replace
+          // schedule replace
         } else if (havePropsChanged(currentProps, nextProps)) {
           // update props only if it's an element
           if (nextNodeType !== 'container') {
@@ -125,13 +122,17 @@ function performsWorkUnit(workUnit, scheduler) {
     }
   }
 
+  // move the dom cursor if the parsed node is of type element
+  if (typeof nextNode === 'object' && nextNode.nodeType === 'element') {
+    workUnit.domMarker.cursor += 1;
+  }
+
   // determine if the current unit is finished
   const nextTreeCursor = treeCursor + 1;
   if (nextTree[nextTreeCursor] === undefined && currentTree[nextTreeCursor] === undefined) {
     workUnit.state = 'FINISHED';
   } else {
     workUnit.treeCursor = nextTreeCursor;
-    workUnit.domMarker.cursor += 1;
   }
 }
 
