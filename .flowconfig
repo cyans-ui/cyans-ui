@@ -1,0 +1,44 @@
+# Flow config
+# [include]
+#
+[ignore]
+.*/node_modules/.*
+# [libs]
+#
+# [lints]
+# 
+[options]
+# all=false
+emoji=false
+# esproposal.class_instance_fields=false
+# esproposal.class_static_fields=false
+# esproposal.decorators=false
+# esproposal.export_star_as=false
+experimental.const_params=true
+include_warnings=true
+# log.file=false
+# max_header_tokens=false
+# module.file_ext=false
+# module.ignore_non_literal_requires=false
+# module.name_mapper.extension=false
+# module.name_mapper=false
+# module.system.node.resolve_dirname=false
+# module.system=false
+module.use_strict=true
+# munge_underscores=false
+no_flowlib=false
+# server.max_workers=false
+# sharedmemory.dep_table_pow=false
+# sharedmemory.dirs=false
+# sharedmemory.hash_table_pow=false
+# sharedmemory.log_level=false
+# sharedmemory.minimum_available=false
+# strip_root=false
+suppress_comment= \\(.\\|\n\\)*\\$FlowSkip
+suppress_type=$untyped
+# temp_dir=false
+# traces=1
+# unsafe.enable_getters_and_setters=false
+
+[version]
+0.52.0

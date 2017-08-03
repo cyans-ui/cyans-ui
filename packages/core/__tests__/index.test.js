@@ -1,3 +1,5 @@
+// @flow
+
 import a from '../index';
 
 test('should be 5', () => {
