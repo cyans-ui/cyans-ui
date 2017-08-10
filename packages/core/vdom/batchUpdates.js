@@ -12,10 +12,14 @@ import {
   updateProps,
 } from './props';
 
-import { createTextDomNode } from './domNodes';
+import {
+  createTextDomNode,
+  createDomNode,
+} from './domNodes';
 
 const WORK_TYPES = {
   DIFF: 'DIFF',
+  APPEND: 'APPEND',
 };
 
 function createDomMarker(parent, cursor = 0) {
@@ -40,6 +44,10 @@ function createUnitOfWork(workType, parentVNode, nextTree, currentTree, domMarke
 
 function createDiffUnitOfWork(nextTree, currentTree, domMarker, parentVNode) {
   return createUnitOfWork(WORK_TYPES.DIFF, parentVNode, nextTree, currentTree, domMarker);
+}
+
+function createAppendUnitOfWork(nextTree, domMarker, parentVNode) {
+  return createUnitOfWork(WORK_TYPES.APPEND, parentVNode, nextTree, [], domMarker);
 }
 
 function performsWorkUnit(workUnit, scheduler) {
@@ -67,8 +75,73 @@ function performsWorkUnit(workUnit, scheduler) {
   }
 
   switch (workUnit.workType) {
+    case WORK_TYPES.APPEND: {
+      if (workUnit.state === 'IN_PROGRESS') {
+        if (nextNode !== null && nextNode !== undefined) {
+          if (typeof nextNode === 'object') {
+            if (nextNode.nodeType === 'container') {
+              // use sub tree
+              addWorkUnit(
+                createAppendUnitOfWork(nextNode.subTree, domMarker, nextNode.parentVNode),
+                scheduler,
+              );
+            } else if (Array.isArray(nextNode)) {
+              // use node as sub tree
+              addWorkUnit(
+                createAppendUnitOfWork(nextNode, domMarker),
+                scheduler,
+              );
+            } else {
+              const createdNode = createDomNode(nextNode);
+
+              // evaluate subtree
+              if (nextNode.subTree && nextNode.subTree.length) {
+                // put the work unit on hold until the children have been created
+                // and save the createdNode into the currentWorkStage
+                workUnit.state = 'ON_HOLD';
+                workUnit.currentWorkStage.createdNode = createdNode;
+
+                addWorkUnit(
+                  createAppendUnitOfWork(
+                    nextNode.subTree,
+                    createDomMarker(createdNode),
+                    nextNode.parentVNode,
+                  ),
+                  scheduler,
+                );
+              } else {
+                domMarker.parent.appendChild(createdNode);
+              }
+            }
+          } else {
+            domMarker.parent.appendChild(createTextDomNode(nextNode));
+          }
+        }
+      }
+
+      if (workUnit.state === 'ON_HOLD') {
+        workUnit.state = 'IN_PROGRESS';
+
+        domMarker.parent.appendChild(workUnit.currentWorkStage.createdNode);
+      }
+
+      break;
+    }
+
     case WORK_TYPES.DIFF: {
-      if (typeof nextNode === 'object') {
+      if (nextNode === undefined) {
+        // remove current node
+      } else if (currentNode === undefined) {
+        // create a new unit of work of type ADD
+        // using the tree from the current cursor on
+        // based on the assumption that if the current node
+        // is undefined, we don't need to check the rest of this tree
+        // since it would all end up in an ADD operation
+        addWorkUnit(
+          createAppendUnitOfWork(nextTree.slice(treeCursor), domMarker, nextNode.parentVNode),
+          scheduler,
+        );
+      } else if (typeof nextNode === 'object') {
         const {
           nodeType: nextNodeType,
           type: nextType,
@@ -103,15 +176,11 @@ function performsWorkUnit(workUnit, scheduler) {
             scheduler,
           );
         }
-      }
-
-      if (typeof nextNode !== 'object') {
-        if (nextNode !== currentNode) {
-          domMarker.parent.replaceChild(
-            createTextDomNode(nextNode),
-            domMarker.parent.childNodes[domMarker.cursor],
-          );
-        }
+      } else if (nextNode !== currentNode) {
+        domMarker.parent.replaceChild(
+          createTextDomNode(nextNode),
+          domMarker.parent.childNodes[domMarker.cursor],
+        );
       }
 
       break;
@@ -128,11 +197,13 @@ function performsWorkUnit(workUnit, scheduler) {
   }
 
   // determine if the current unit is finished
-  const nextTreeCursor = treeCursor + 1;
-  if (nextTree[nextTreeCursor] === undefined && currentTree[nextTreeCursor] === undefined) {
-    workUnit.state = 'FINISHED';
-  } else {
-    workUnit.treeCursor = nextTreeCursor;
+  if (workUnit.state === 'IN_PROGRESS') {
+    const nextTreeCursor = treeCursor + 1;
+    if (nextTree[nextTreeCursor] === undefined && currentTree[nextTreeCursor] === undefined) {
+      workUnit.state = 'FINISHED';
+    } else {
+      workUnit.treeCursor = nextTreeCursor;
+    }
   }
 }
 

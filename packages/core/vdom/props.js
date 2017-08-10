@@ -8,67 +8,67 @@ import {
   addEventListener,
 } from './events';
 
-export function removeBooleanProp($target, name) {
-  $target.removeAttribute(name);
+export function removeBooleanProp(target, name) {
+  target.removeAttribute(name);
 }
 
-export function setBooleanProp($target, name, value) {
+export function setBooleanProp(target, name, value) {
   if (value) {
-    $target.setAttribute(name, value);
+    target.setAttribute(name, value);
   } else {
-    removeBooleanProp($target, name);
+    removeBooleanProp(target, name);
   }
 }
 
-export function setProp($target, name, value) {
+export function setProp(target, name, value) {
   if (name === 'className') {
-    $target.setAttribute('class', value);
+    target.setAttribute('class', value);
   } else if (typeof value === 'boolean') {
-    setBooleanProp($target, name, value);
+    setBooleanProp(target, name, value);
   } else {
-    $target.setAttribute(name, value);
+    target.setAttribute(name, value);
   }
 }
 
-export function removeProp($target, name, value) {
+export function removeProp(target, name, value) {
   if (name === 'className') {
-    $target.removeAttribute('class');
+    target.removeAttribute('class');
   } else if (typeof value === 'boolean') {
-    removeBooleanProp($target, name);
+    removeBooleanProp(target, name);
   } else {
-    $target.removeAttribute(name);
+    target.removeAttribute(name);
   }
 }
 
-export function updateProp($target, name, newVal, oldVal) {
+export function updateProp(target, name, newVal, oldVal) {
   if (isEventProp(name)) {
     if (newVal === undefined || newVal !== oldVal) {
-      removeEventListener($target, name, oldVal);
+      removeEventListener(target, name, oldVal);
     }
 
     if (newVal !== undefined) {
-      addEventListener($target, name, newVal);
+      addEventListener(target, name, newVal);
     }
   } else if (newVal === undefined) {
-    removeProp($target, name, oldVal);
+    removeProp(target, name, oldVal);
   } else {
-    setProp($target, name, newVal);
+    setProp(target, name, newVal);
   }
 }
 
-export function setProps($target, props) {
+export function setProps(target, props = {}) {
   Object.keys(props).forEach((name) => {
     if (!isCustomProp(name)) {
-      updateProp($target, name, props[name]);
+      updateProp(target, name, props[name]);
     }
   });
 }
 
-export function updateProps($target, newProps, oldProps = {}) {
+export function updateProps(target, newProps = {}, oldProps = {}) {
   const props = { ...oldProps, ...newProps };
   Object.keys(props).forEach((name) => {
     if (!isCustomProp(name)) {
-      updateProp($target, name, newProps[name], oldProps[name]);
+      updateProp(target, name, newProps[name], oldProps[name]);
     }
   });
 }
