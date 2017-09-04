@@ -10,7 +10,8 @@
       "targets": {
         "browsers": ["last 2 versions"]
       }
-    }]
+    }],
+    "flow"
   ],
   "env": {
     "test": {
