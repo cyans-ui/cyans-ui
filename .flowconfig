@@ -41,4 +41,4 @@ suppress_type=$untyped
 # unsafe.enable_getters_and_setters=false
 
 [version]
-0.52.0
+0.54.0

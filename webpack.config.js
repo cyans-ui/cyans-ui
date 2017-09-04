@@ -1,3 +1,4 @@
+const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
@@ -39,7 +40,10 @@ module.exports = {
       }
     ]
   },
-  plugins: debug ? [] : [
+  plugins: debug ? [
+    new FlowBabelWebpackPlugin({ warn: true })
+  ] : [
+    new FlowBabelWebpackPlugin({ warn: true }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false })

@@ -2,7 +2,8 @@
   "plugins": [
     ["babel-plugin-transform-builtin-classes", {
       "globals": ["HTMLElement"]
-    }]
+    }],
+    "transform-flow-comments"
   ],
   "presets": [
     ["env", {
