@@ -17,17 +17,15 @@ import {
   createDomNode,
 } from './domNodes';
 
+import {
+  createDomMarker,
+  shiftCursor,
+} from './domMarker';
+
 const WORK_TYPES = {
   DIFF: 'DIFF',
   APPEND: 'APPEND',
 };
-
-function createDomMarker(parent, cursor = 0) {
-  return {
-    parent,
-    cursor,
-  };
-}
 
 function createUnitOfWork(workType, parentVNode, nextTree, currentTree, domMarker, treeCursor = 0) {
   return {
@@ -162,14 +160,14 @@ function performsWorkUnit(workUnit, scheduler) {
         } else if (havePropsChanged(currentProps, nextProps)) {
           // update props only if it's an element
           if (nextNodeType !== 'container') {
-            updateProps(domMarker.parent.childNodes[domMarker.cursor], nextProps, currentProps);
+            updateProps(domMarker.cursor, nextProps, currentProps);
           }
         }
 
         if (Array.isArray(nextNode.subTree) && nextNode.subTree.length) {
           const subDomMarker = nextNodeType === 'container' ?
             domMarker :
-            createDomMarker(domMarker.parent.childNodes[domMarker.cursor]);
+            createDomMarker(domMarker.cursor);
 
           addWorkUnit(
             createDiffUnitOfWork(nextNode.subTree, currentNode.subTree, subDomMarker, nextNode),
@@ -179,7 +177,7 @@ function performsWorkUnit(workUnit, scheduler) {
       } else if (nextNode !== currentNode) {
         domMarker.parent.replaceChild(
           createTextDomNode(nextNode),
-          domMarker.parent.childNodes[domMarker.cursor],
+          domMarker.cursor,
         );
       }
 
@@ -193,7 +191,7 @@ function performsWorkUnit(workUnit, scheduler) {
 
   // move the dom cursor if the parsed node is of type element
   if (typeof nextNode === 'object' && nextNode.nodeType === 'element') {
-    workUnit.domMarker.cursor += 1;
+    shiftCursor(workUnit.domMarker);
   }
 
   // determine if the current unit is finished
